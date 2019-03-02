@@ -144,13 +144,14 @@ MonoBehaviour:
   debugWallParent: {fileID: 499461131}
   debugWall: {fileID: 1922982964955877483, guid: 6bca17c8a7473244cb12b055748da6d7,
     type: 3}
-  areaSize: {x: 50, y: 50}
+  areaSize: {x: 40, y: 40}
   minSubAreaSize: 6
-  maxSplitVariance: 2
+  maxSplitVariance: 4
   mainSubArea:
-    childSubAreas: []
+    childsSubArea: []
     anchor: {x: 0, y: 0}
     size: {x: 0, y: 0}
+    isTooSmall: 0
 --- !u!4 &499461131
 Transform:
   m_ObjectHideFlags: 0
