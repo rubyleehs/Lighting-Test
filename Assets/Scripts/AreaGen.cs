@@ -2,29 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Area : MonoBehaviour
+public class AreaGen : MonoBehaviour
 {
-    public Transform debugWallParent;
-    public GameObject debugWall;
-    public Vector2Int areaSize;
-
     public int minSubAreaSize = 6;
     public int maxSplitVariance = 5;
 
-    public int[,] tiles; //-1 wall, 0 unchecked, 1 in room, 2 corridor, 3 connection
     public SubArea mainSubArea;
 
-    void Start()
+    public void GenerateNewArea()
     {
-        GenerateArea();
-    }
-
-    void GenerateArea()
-    {
-        tiles = new int[areaSize.x, areaSize.y];
+        GameManager.areaStats.tiles = new int[GameManager.areaStats.size.x, GameManager.areaStats.size.y];
+        Debug.Log(GameManager.areaStats.tiles.Length);
         mainSubArea = new SubArea
         {
-            size = new Vector2Int(areaSize.x - 4, areaSize.y - 4),
+            size = new Vector2Int(GameManager.areaStats.size.x - 4, GameManager.areaStats.size.y - 4),
             anchor = Vector2Int.one * 2,
         };
         MaxSplit(mainSubArea);
@@ -33,7 +24,6 @@ public class Area : MonoBehaviour
         PlaceAll(mainSubArea);
         Replace(0, -1);
         ConnectAll(mainSubArea);
-        Show();
     }
     
     void MaxSplit(SubArea a0)
@@ -73,12 +63,12 @@ public class Area : MonoBehaviour
             {
                 if (a0.isTooSmall)
                 {
-                    tiles[a0.anchor.x + dx, a0.anchor.y + dy] = 2;
+                    GameManager.areaStats.tiles[a0.anchor.x + dx, a0.anchor.y + dy] = 1;
                 }
                 else
                 {
-                    if ((dx == -1) || (dy == -1) || (dx == a0.size.x) || (dy == a0.size.y)) tiles[a0.anchor.x + dx, a0.anchor.y + dy] = -1;
-                    else tiles[a0.anchor.x + dx, a0.anchor.y + dy] = 1;
+                    if ((dx == -1) || (dy == -1) || (dx == a0.size.x) || (dy == a0.size.y)) GameManager.areaStats.tiles[a0.anchor.x + dx, a0.anchor.y + dy] = -1;
+                    else GameManager.areaStats.tiles[a0.anchor.x + dx, a0.anchor.y + dy] = 1;
                 }
             }
         }
@@ -86,22 +76,11 @@ public class Area : MonoBehaviour
 
     void Replace(int from, int to)
     {
-        for (int dy = 0; dy < tiles.GetLength(1); dy++)
+        for (int dy = 0; dy < GameManager.areaStats.tiles.GetLength(1); dy++)
         {
-            for (int dx = 0; dx < tiles.GetLength(0); dx++)
+            for (int dx = 0; dx < GameManager.areaStats.tiles.GetLength(0); dx++)
             {
-                if (tiles[dx, dy] == from) tiles[dx, dy] = to;
-            }
-        }
-    }
-
-    void Show()
-    {
-        for (int dy = 0; dy < tiles.GetLength(1); dy++)
-        {
-            for (int dx = 0; dx < tiles.GetLength(0); dx++)
-            {
-                if (tiles[dx, dy] == -1) Instantiate(debugWall,new Vector2(dx,dy),Quaternion.identity,debugWallParent);
+                if (GameManager.areaStats.tiles[dx, dy] == from) GameManager.areaStats.tiles[dx, dy] = to;
             }
         }
     }
@@ -121,19 +100,21 @@ public class Area : MonoBehaviour
         if (a.childsSubArea.Count != 2) return;
         SubArea a0 = a.childsSubArea[0];
         SubArea a1 = a.childsSubArea[1];
-        int dy = -1;
-        int dx = -1;
+        int dy = 0;
+        int dx = 0;
+        int fs = 0;
 
-        if (a0.anchor.y == a1.anchor.y) dy = Random.Range(2, a1.size.y -1);
-        else dx = Random.Range(2, a1.size.x -1);
-        a.connection.Add(new Vector2Int(a1.anchor.x + dx, a1.anchor.y + dy));
+        if (a0.anchor.y == a1.anchor.y) dy = Random.Range(1, a1.size.y -1);
+        else dx = Random.Range(1, a1.size.x -1);
+        if(!a1.isTooSmall) a.connection.Add(new Vector2Int(a1.anchor.x + dx, a1.anchor.y + dy));
 
         while (true)
         {
+            fs++;
             if (a0.anchor.y == a1.anchor.y) dx--;
             else dy--;
 
-            if (tiles[a1.anchor.x + dx, a1.anchor.y + dy] > 0) break;
+            if (a1.anchor.x + dx == 1|| a1.anchor.y + dy == 1 || (GameManager.areaStats.tiles[a1.anchor.x + dx, a1.anchor.y + dy] > 0 && fs > 1)) break;
             else
             {
                 a.connection.Add(new Vector2Int(a1.anchor.x + dx, a1.anchor.y + dy));
@@ -142,7 +123,7 @@ public class Area : MonoBehaviour
 
         for (int i = 0; i < a.connection.Count; i++)
         {
-            tiles[a.connection[i].x, a.connection[i].y] = 3;
+            GameManager.areaStats.tiles[a.connection[i].x, a.connection[i].y] = 2;
         }
     }
 }

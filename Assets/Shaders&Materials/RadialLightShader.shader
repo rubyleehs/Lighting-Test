@@ -5,8 +5,8 @@
 		_Tint ("Tint", Color) = (1,1,1,1)
 		_MainTex ("Base (RGB)", 2D) = "white" {}
 
-        _SolidRatio ("SolidRatio", float) = 0
-        _FalloffExponent ("FalloffExponent", float) = 0.5
+        _FalloffBase ("FalloffBase", float) = 0.5
+		_FalloffExponent("FalloffExponent", float) = 0.5
 
 	}
 
@@ -30,7 +30,8 @@
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
             sampler2D _Texture1;
-            float _SolidRatio;
+
+			float _FalloffBase;
             float _FalloffExponent;
 
 
@@ -59,7 +60,7 @@
                 float4 result = tex2D(_MainTex, i.uv) * _Tint;
                 float sqrDeltaFromCenter = (pow(i.uv.x - 0.5,2) + pow(i.uv.y - 0.5,2));
 
-                result.a = lerp(1,0,pow(clamp(sqrt(sqrDeltaFromCenter)-_SolidRatio,0,5)/(1 - _SolidRatio), _FalloffExponent));
+				result.a = 1 - (1 / pow(sqrDeltaFromCenter * _FalloffBase, _FalloffExponent));
                 return result;
             }
 			ENDCG
