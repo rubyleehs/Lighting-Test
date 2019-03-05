@@ -12,7 +12,6 @@ public class AreaGen : MonoBehaviour
     public void GenerateNewArea()
     {
         GameManager.areaStats.tiles = new int[GameManager.areaStats.size.x, GameManager.areaStats.size.y];
-        Debug.Log(GameManager.areaStats.tiles.Length);
         mainSubArea = new SubArea
         {
             size = new Vector2Int(GameManager.areaStats.size.x - 4, GameManager.areaStats.size.y - 4),

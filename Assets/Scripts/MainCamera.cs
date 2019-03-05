@@ -43,10 +43,11 @@ public class MainCamera : MonoBehaviour {
 
     private void Start()
     {
-        camRig.position = player.transform.position + Vector3.forward * z;
+        //camRig.position = player.transform.position + Vector3.forward * z;
         AudioListener.volume = masterVolume;
     }
 
+    /*
     private void FixedUpdate()
     {
         if (isUnderPlayerControl)
@@ -69,7 +70,7 @@ public class MainCamera : MonoBehaviour {
             }
         }
     }
-
+    */
     private void Update()
     {
         mousePos = GetMouseWorld2DPoint();

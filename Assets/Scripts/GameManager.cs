@@ -12,8 +12,8 @@ public struct AreaStats
     [HideInInspector] public int[,] tiles; // -1 wall, 0 unchecked, 1 room, 2 corridor //All obstacles are negative. eg.water, doors 
     [HideInInspector] public int[,] tilesMeta;
 
-    [HideInInspector] public int[,] basicDijkstra;
-    //player char start with 10, have flood fill have a limit, walls are -100
+    [HideInInspector] public float[,] basicDijkstra; //player char start with 10, have flood fill have a limit, walls are -100
+    [HideInInspector] public int[,] characterMaps; //store all characters. So if pathfind > 1 step, if land on a character can either take a step back of attack etc
 }
 
 public class GameManager : MonoBehaviour
