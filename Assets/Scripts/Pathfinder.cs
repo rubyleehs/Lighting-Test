@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class PathFinder: MonoBehaviour
 {
-    private static float untravellableDijkValue = -1000;
+    public static float untravellableDijkValue = -1000;
 
     public static void DijkFloodStep(ref float[,] map, int x, int y, float value, float floodStepValue, int stepCap)
     {
-        if (stepCap <= 0 || x < 0 || y < 0 || x >= map.GetLength(0) || y >= map.GetLength(1)) return;
+        if (stepCap <= 0 || x < 0 || y < 0 || x >= map.GetLength(0) || y >= map.GetLength(1) || map[x,y] == untravellableDijkValue) return;
 
-        if ((floodStepValue > 0 && value <= map[x, y]) || (floodStepValue < 0 && value >= map[x, y]))
+        if (map[x,y] == 0 || (floodStepValue > 0 && value <= map[x, y]) || (floodStepValue < 0 && value >= map[x, y]))
         {
             map[x, y] = value;
             DijkFloodStep(ref map, x + 1, y, value + floodStepValue, floodStepValue, stepCap - 1);
@@ -77,7 +77,6 @@ public class PathFinder: MonoBehaviour
             return;
         }
         else if (obstacleMap[(int)lowestFCost.x,(int)lowestFCost.y] >= pathStepCap) return;
-        Debug.Log(obstacleMap[(int)lowestFCost.x, (int)lowestFCost.y] + "|| " + lowestFCost.x + ", " + lowestFCost.y + ", " + lowestFCost.z);
         discoveredCells.Remove(new Vector2Int((int)lowestFCost.x, (int)lowestFCost.y));
         DiscoverCell(ref obstacleMap, ref cellFCost, ref dir, ref discoveredCells, new Vector2Int((int)lowestFCost.x + 1, (int)lowestFCost.y), to, 3, obstacleMap[(int)lowestFCost.x, (int)lowestFCost.y] + 1);
         DiscoverCell(ref obstacleMap, ref cellFCost, ref dir, ref discoveredCells, new Vector2Int((int)lowestFCost.x, (int)lowestFCost.y + 1), to, 4, obstacleMap[(int)lowestFCost.x, (int)lowestFCost.y] + 1);

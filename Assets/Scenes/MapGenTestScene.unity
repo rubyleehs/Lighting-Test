@@ -142,6 +142,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 388b14786ee877e4295e4f01cfb45f7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hightlightTile: {fileID: 6973942425349091515, guid: 2da9667ade6dcf24d8c2d12783b728e0,
+    type: 3}
   spritesPixelSize: 32
   meshParent: {fileID: 1105908398}
   decoParent: {fileID: 1592472771}
@@ -488,11 +490,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c1b7cea1f0ab6441a3f0e53b8d7b7a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tempChar: {fileID: 6848986676829978979, guid: 774f7f8fb0f9354458b0678005352f0d,
+    type: 3}
   I_areaStats:
     size: {x: 35, y: 35}
     cellSize: 1
-  areaGen: {fileID: 296095704}
-  areaVis: {fileID: 296095702}
+  I_areaGen: {fileID: 296095704}
+  I_areaVis: {fileID: 296095702}
 --- !u!4 &449411956
 Transform:
   m_ObjectHideFlags: 0
@@ -806,6 +810,7 @@ MonoBehaviour:
   testFromPos: {x: 0, y: 0}
   testToPos: {x: 0, y: 0}
   path: []
+  selectedChar: {fileID: 0}
 --- !u!212 &2019247530
 SpriteRenderer:
   m_ObjectHideFlags: 0

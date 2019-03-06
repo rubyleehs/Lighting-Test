@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class AreaVisuals : MonoBehaviour
 {
+    public static List<Transform> activeHighlightTiles;
+    public static List<Transform> inactiveHighlightTiles;
+    public GameObject hightlightTile;//add tag. if player click on check if blue/red. if blue move, red move + attack. if click anothe rcharacter switch slected char, if hit nothing, deselect
+
     public int spritesPixelSize;
 
     public Transform meshParent;
@@ -29,6 +33,8 @@ public class AreaVisuals : MonoBehaviour
 
     public void Init()
     {
+        activeHighlightTiles = new List<Transform>();
+        inactiveHighlightTiles = new List<Transform>();
         decoList = new List<Transform>();
 
         if (transform == null) transform = GetComponent<Transform>();
@@ -223,6 +229,50 @@ public class AreaVisuals : MonoBehaviour
         triangles.Add(vertexIndex);
         triangles.Add(vertexIndex + 2);
         triangles.Add(vertexIndex + 3);
+    }
+
+    public void HighlightTilesInRange(Vector2Int center, int range)
+    {
+        float[,] minifiedMap = new float[2 * range + 1, 2 * range + 1];
+        for (int dy = -range; dy < range; dy++)
+        {
+            for (int dx = -range; dx < range; dx++)
+            {
+                if (center.x + dx < 0 || center.y + dy < 0 || center.x + dx > GameManager.areaStats.size.x || center.y + dy > GameManager.areaStats.size.y) minifiedMap[range + dx, range + dy] = (int)PathFinder.untravellableDijkValue;
+                else if (GameManager.areaStats.tiles[center.x + dx, center.y + dy] < 0) minifiedMap[range + dx, range + dy] = (int)PathFinder.untravellableDijkValue; 
+
+            }
+        }
+        PathFinder.DijkFloodStep(ref minifiedMap, center.x, center.y, 1, 1, range);
+        for (int dy = -range; dy < range; dy++)
+        {
+            for (int dx = -range; dx < range; dx++)
+            {
+                Debug.Log(minifiedMap[dx + range, dy + range]);
+                if (minifiedMap[dx + range, dy + range] > 0) SummonHighlightTile(center + new Vector2Int(dx, dy), new Color(255, 0, 0, 0.5f));
+            }
+        }
+    }
+
+    public void SummonHighlightTile(Vector2Int index, Color color)
+    {
+        Transform tile;
+        if (inactiveHighlightTiles.Count == 0)
+        {
+            tile = Instantiate(hightlightTile, (Vector2)index * GameManager.areaStats.cellSize, Quaternion.identity, null).transform;
+            tile.localScale *= GameManager.areaStats.cellSize;
+            tile.GetComponent<SpriteRenderer>().color = color;
+            activeHighlightTiles.Add(tile);
+        }
+        else
+        {
+            tile = inactiveHighlightTiles[0];
+            inactiveHighlightTiles.RemoveAt(0);
+            tile.position = (Vector2)index * GameManager.areaStats.cellSize;
+            tile.gameObject.SetActive(true);
+            tile.GetComponent<SpriteRenderer>().color = color;
+            activeHighlightTiles.Add(tile);
+        }
     }
 }
 

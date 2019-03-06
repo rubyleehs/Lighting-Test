@@ -18,17 +18,24 @@ public struct AreaStats
 
 public class GameManager : MonoBehaviour
 {
+    public GameObject tempChar;
+
     public static AreaStats areaStats;
     public AreaStats I_areaStats;
 
-    public AreaGen areaGen;
-    public AreaVisuals areaVis;
+    public static AreaGen areaGen;
+    public AreaGen I_areaGen;
+
+    public static AreaVisuals areaVis;
+    public AreaVisuals I_areaVis;
 
     private WaitForEndOfFrame waitEF;
 
     private void Awake()
     {
         areaStats = I_areaStats;
+        areaGen = I_areaGen;
+        areaVis = I_areaVis;
         waitEF = new WaitForEndOfFrame();
 
         StartCoroutine(InitGame());
@@ -58,6 +65,9 @@ public class GameManager : MonoBehaviour
 
     IEnumerator CreateUnits()
     {
+        Character c = Instantiate(tempChar,null).GetComponent<Character>();
+        c.stats.tileIndex = Vector2Int.one * 10;
+        c.transform.position = Vector2.one * 10;
         //create Player
         //create enemies
         yield return waitEF;
