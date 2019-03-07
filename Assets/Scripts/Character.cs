@@ -34,6 +34,7 @@ public class Character : MonoBehaviour
     public virtual void Deselect()
     {
         Debug.Log(transform.name + " Deselected");
+        GameManager.areaVis.DesummonAllHighlightTiles();
     }
 
     public virtual IEnumerator Travel(List<Vector2Int> travelNodes)

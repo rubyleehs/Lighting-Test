@@ -75,7 +75,7 @@ MonoBehaviour:
   stats:
     speed: 1
     tileIndex: {x: 0, y: 0}
-    moveRange: 10
+    moveRange: 5
     attackRange: {x: 0, y: 0}
 --- !u!212 &4926759230546241403
 SpriteRenderer:

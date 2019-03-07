@@ -233,22 +233,13 @@ public class AreaVisuals : MonoBehaviour
 
     public void HighlightTilesInRange(Vector2Int center, int range)
     {
-        float[,] minifiedMap = new float[2 * range + 1, 2 * range + 1];
-        for (int dy = -range; dy < range; dy++)
+        float[,] minifiedMap;
+        PathFinder.CreateMinifiedMap(ref GameManager.areaStats.tiles, ref GameManager.chars ,out minifiedMap,center.x,center.y,range, new List<int>());
+        PathFinder.DijkFloodStep(ref minifiedMap, range, range, 1, 1, range);//ug
+        for (int dy = -range; dy <= range; dy++)
         {
-            for (int dx = -range; dx < range; dx++)
+            for (int dx = -range; dx <= range; dx++)
             {
-                if (center.x + dx < 0 || center.y + dy < 0 || center.x + dx > GameManager.areaStats.size.x || center.y + dy > GameManager.areaStats.size.y) minifiedMap[range + dx, range + dy] = (int)PathFinder.untravellableDijkValue;
-                else if (GameManager.areaStats.tiles[center.x + dx, center.y + dy] < 0) minifiedMap[range + dx, range + dy] = (int)PathFinder.untravellableDijkValue; 
-
-            }
-        }
-        PathFinder.DijkFloodStep(ref minifiedMap, center.x, center.y, 1, 1, range);
-        for (int dy = -range; dy < range; dy++)
-        {
-            for (int dx = -range; dx < range; dx++)
-            {
-                Debug.Log(minifiedMap[dx + range, dy + range]);
                 if (minifiedMap[dx + range, dy + range] > 0) SummonHighlightTile(center + new Vector2Int(dx, dy), new Color(255, 0, 0, 0.5f));
             }
         }
@@ -267,12 +258,22 @@ public class AreaVisuals : MonoBehaviour
         else
         {
             tile = inactiveHighlightTiles[0];
-            inactiveHighlightTiles.RemoveAt(0);
             tile.position = (Vector2)index * GameManager.areaStats.cellSize;
             tile.gameObject.SetActive(true);
             tile.GetComponent<SpriteRenderer>().color = color;
             activeHighlightTiles.Add(tile);
+            inactiveHighlightTiles.RemoveAt(0);
         }
+    }
+
+    public void DesummonAllHighlightTiles()
+    {
+        for (int i = 0; i < activeHighlightTiles.Count; i++)
+        {
+            activeHighlightTiles[i].gameObject.SetActive(false);
+            inactiveHighlightTiles.Add(activeHighlightTiles[i]);
+        }
+        activeHighlightTiles.Clear();
     }
 }
 

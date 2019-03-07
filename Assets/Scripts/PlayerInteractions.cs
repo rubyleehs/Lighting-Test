@@ -29,10 +29,15 @@ public class PlayerInteractions : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             RaycastHit2D hit = Physics2D.Raycast(MainCamera.mousePos, Vector2.zero);
-
-            if (hit == false && selectedChar != null)
+            if (!hit)
+            {
+                if (selectedChar != null) selectedChar.Deselect();
+                selectedChar = null;
+            }
+            else if (hit.transform.CompareTag("MoveRange"))
             {
                 StartCoroutine(selectedChar.Travel(PathFinder.RequestAStarPath(ref GameManager.areaStats.tiles, selectedChar.stats.tileIndex, GetMouseTileSpace(), new List<int>(), 30)));
+                selectedChar.Deselect();
             }
             else if (hit && hit.transform.CompareTag("Character"))
             {

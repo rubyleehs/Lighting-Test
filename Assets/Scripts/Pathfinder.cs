@@ -35,6 +35,26 @@ public class PathFinder: MonoBehaviour
         }
     }
 
+    public static void CreateMinifiedMap(ref int[,] obstacleMap, ref List<Character> chars, out float[,] minifiedMap, int x, int y, int range, List<int> ignoreObstacles)
+    {
+        minifiedMap = new float[2 * range + 1, 2 * range + 1];
+        for (int dy = -range; dy <= range; dy++)
+        {
+            for (int dx = -range; dx <= range; dx++)
+            {
+                if (x + dx < 0 || y + dy < 0 || x + dx > obstacleMap.GetLength(0) || y + dy > obstacleMap.GetLength(1)) minifiedMap[range + dx, range + dy] = untravellableDijkValue;
+                else if (obstacleMap[x +dx, y +dy] < 0 && !ignoreObstacles.Contains(obstacleMap[x + dx, y + dy])) minifiedMap[range + dx, range + dy] = untravellableDijkValue;
+            }
+        }
+
+        for (int i = 0; i < chars.Count; i++)
+        {
+            Vector2Int tileIndex = chars[i].stats.tileIndex;
+            if (tileIndex.x - x < -range || tileIndex.x - x > range || tileIndex.y - y < -range || tileIndex.y - range > range) continue;
+            //minifiedMap[tileIndex.x + range - x, tileIndex.y + range - y] = untravellableDijkValue;
+        }
+    }
+
     public static List<Vector2Int> RequestAStarPath(ref int[,] obstacleMap, Vector2Int from, Vector2Int to, List<int> ignoreObstacles, int pathStepCap)
     {
         int[,] dir = new int[obstacleMap.GetLength(0), obstacleMap.GetLength(1)];

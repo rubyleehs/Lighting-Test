@@ -7,8 +7,8 @@ public struct AreaStats
 {
     public Vector2Int size;
     public float cellSize;
-
-    [Header("Visual Maps")]
+    //have ANOTHER class/SO for storing diffrent tiles, their sprites, and what they obstruct
+    [Header("Visual Maps")]//swap to start TileMap[,] where TileMap has tile type, tile meta, character map, highlighted
     [HideInInspector] public int[,] tiles; // -1 wall, 0 unchecked, 1 room, 2 corridor //All obstacles are negative. eg.water, doors 
     [HideInInspector] public int[,] tilesMeta;
 
@@ -19,6 +19,7 @@ public struct AreaStats
 public class GameManager : MonoBehaviour
 {
     public GameObject tempChar;
+    public static List<Character> chars;
 
     public static AreaStats areaStats;
     public AreaStats I_areaStats;
@@ -36,6 +37,7 @@ public class GameManager : MonoBehaviour
         areaStats = I_areaStats;
         areaGen = I_areaGen;
         areaVis = I_areaVis;
+        chars = new List<Character>();
         waitEF = new WaitForEndOfFrame();
 
         StartCoroutine(InitGame());
@@ -68,6 +70,7 @@ public class GameManager : MonoBehaviour
         Character c = Instantiate(tempChar,null).GetComponent<Character>();
         c.stats.tileIndex = Vector2Int.one * 10;
         c.transform.position = Vector2.one * 10;
+        chars.Add(c);
         //create Player
         //create enemies
         yield return waitEF;
