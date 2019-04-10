@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AreaGen : MonoBehaviour
 {
+    //-1 walls, 0 uncheck, 1 room, 2 connect
     public int minSubAreaSize = 6;
     public int maxSplitVariance = 5;
 
